@@ -1,13 +1,13 @@
 // Initialize Firebase
-  var config = {
+var config = {
     apiKey: "AIzaSyAxXOJnQroGY0yTZKWT78gsHXbLYHpha7U",
     authDomain: "train-time-24674.firebaseapp.com",
     databaseURL: "https://train-time-24674.firebaseio.com",
     projectId: "train-time-24674",
     storageBucket: "train-time-24674.appspot.com",
     messagingSenderId: "964127889488"
-  };
-  firebase.initializeApp(config);
+};
+firebase.initializeApp(config);
 
 // Create a variable to reference the database
 var database = firebase.database();
@@ -47,25 +47,35 @@ $("#submit").on("click", function (event) {
     $("#frequency").val("");
 });
 
-database.ref().orderByChild("dateAdded").on("child_added", function (snapshot) {
+database.ref().orderByChild("dateAdded").on("child_added", function (childSnapshot) {
 
-    // Log everything that's coming out of snapshot
-    console.log(snapshot.val());
-    console.log(snapshot.val().name);
-    console.log(snapshot.val().destination);
-    console.log(snapshot.val().firstTrain);
-    console.log(snapshot.val().frequency);
+    var tFrequency = childSnapshot.val().frequency;
+    var firstTime = childSnapshot.val().firstTrain;
 
-    var nextArrival = 0;
-    var minutesAway = 0;
+    // First Time (pushed back 1 year to make sure it comes before current time)
+    var firstTimeConverted = moment(firstTime, "HH:mm").subtract(1, "years");
 
-   
+    // Current Time
+    var currentTime = moment();
+
+    // Difference between the times
+    var diffTime = currentTime.diff(moment(firstTimeConverted), "minutes");
+
+    // Time apart (remainder)
+    var tRemainder = diffTime % tFrequency;
+
+    // Minute Until Train
+    var tMinutesTillTrain = tFrequency - tRemainder;
+
+    // Next Train
+    var nextTrain = currentTime.add(tMinutesTillTrain, "minutes");
+
     var row = $("<tr>");
-    var tdName = $("<td>").text(snapshot.val().name);
-    var tdDestination = $("<td>").text(snapshot.val().destination);
-    var tdFrequency = $("<td>").text(snapshot.val().frequency);
-    var tdNextArrival = $("<td>").text(nextArrival);
-    var tdMinutesAway = $("<td>").text(minutesAway);
+    var tdName = $("<td>").text(childSnapshot.val().name);
+    var tdDestination = $("<td>").text(childSnapshot.val().destination);
+    var tdFrequency = $("<td>").text(childSnapshot.val().frequency);
+    var tdNextArrival = $("<td>").text(moment(nextTrain).format("hh:mm A"));
+    var tdMinutesAway = $("<td>").text(tMinutesTillTrain);
     row.append(tdName, tdDestination, tdFrequency, tdNextArrival, tdMinutesAway);
     $("#tbody").append(row);
 

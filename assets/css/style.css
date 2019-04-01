@@ -1,0 +1,22 @@
+.jumbotron{
+    background-image: url("../images/train.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    color: white;
+    text-shadow: 2px 2px 4px #000000;
+}
+
+body{
+    background-image: url("../images/grandCanyon.JPG");
+    background-size: cover;
+}
+
+.card{
+    background-color: rgba(255, 255, 255, 0.80);
+}
+
+.card-header{
+    background-color: rgba(145,109,109, 0.80);
+    text-shadow: 2px 2px 4px #000000;
+}
