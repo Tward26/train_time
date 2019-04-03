@@ -28,7 +28,7 @@ $("#submit").on("click", function (event) {
     frequency = parseInt($("#frequency").val().trim());
 
     if (name === "" || destination === "" || firstTrain === "" || frequency === "") {
-        alert("Please fill out the form");
+        $("#incompleteFormModal").modal("show");
     }
     else {
         database.ref().push({
@@ -38,8 +38,7 @@ $("#submit").on("click", function (event) {
             frequency: frequency,
             dateAdded: firebase.database.ServerValue.TIMESTAMP
         });
-        alert("New Train added");
-
+        $("#newTrainModal").modal("show");
     }
     $("#trainName").val("");
     $("#destination").val("");
@@ -83,4 +82,3 @@ database.ref().orderByChild("dateAdded").on("child_added", function (childSnapsh
 }, function (errorObject) {
     console.log("Errors handled: " + errorObject.code);
 });
-
